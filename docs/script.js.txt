@@ -1,0 +1,117 @@
+// Wait for the DOM to fully load
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 70, // Adjust for header height
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Sticky header on scroll
+    const header = document.querySelector('header');
+    const heroSection = document.querySelector('.hero');
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+    
+    // Form submission handling
+    const contactForm = document.querySelector('.contact-form');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // For a real implementation, you'd use AJAX to send the form data
+            // or integrate with a service like Formspree
+            
+            // Simple validation
+            const inputs = this.querySelectorAll('input, textarea');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('error');
+                } else {
+                    input.classList.remove('error');
+                }
+            });
+            
+            if (isValid) {
+                // Show success message
+                const successMessage = document.createElement('p');
+                successMessage.textContent = 'Thanks for your message! I\'ll get back to you soon.';
+                successMessage.classList.add('success-message');
+                
+                this.innerHTML = '';
+                this.appendChild(successMessage);
+            }
+        });
+    }
+    
+    // Add animation to project items
+    const projectItems = document.querySelectorAll('.project-item');
+    
+    if (projectItems.length > 0) {
+        // This uses Intersection Observer API to detect when elements are in viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        projectItems.forEach(item => {
+            observer.observe(item);
+        });
+    }
+});
+
+// You'll need to add these CSS classes to your stylesheet:
+/*
+.scrolled {
+    background-color: rgba(18, 18, 18, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.error {
+    border: 1px solid #ff6b6b !important;
+}
+
+.success-message {
+    color: #7bed9f;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 20px;
+}
+
+.project-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.project-item.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+*/
